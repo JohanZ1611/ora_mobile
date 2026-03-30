@@ -31,7 +31,11 @@ module.exports = {
         expense: "#C4766A",
       },
       fontFamily: {
-        sans: ["System"],
+        sans: ["DMSans_400Regular"],
+        "sans-light": ["DMSans_300Light"],
+        "sans-medium": ["DMSans_500Medium"],
+        "sans-semibold": ["DMSans_600SemiBold"],
+        "sans-bold": ["DMSans_700Bold"],
       },
     },
   },
