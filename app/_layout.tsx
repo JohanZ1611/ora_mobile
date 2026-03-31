@@ -1,8 +1,3 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
-import { View } from "react-native";
-
 import {
   DMSans_300Light,
   DMSans_400Regular,
@@ -11,15 +6,40 @@ import {
   DMSans_700Bold,
   useFonts,
 } from "@expo-google-fonts/dm-sans";
-
 import { QueryClientProvider } from "@tanstack/react-query";
 import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import { View } from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { Stack, useRouter, useSegments } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 
 import { queryClient } from "@lib/queryClient";
+import { useAuthStore } from "@stores/auth.store";
 
 import "../global.css";
 
 SplashScreen.preventAutoHideAsync();
+
+function RootLayoutNav() {
+  const { isAuthenticated } = useAuthStore();
+  const segments = useSegments();
+  const router = useRouter();
+
+  useEffect(() => {
+    const inAuthGroup = segments[0] === "(auth)";
+
+    if (!isAuthenticated && !inAuthGroup) {
+      router.replace("/(auth)/login");
+    } else if (isAuthenticated && inAuthGroup) {
+      router.replace("/(app)");
+    }
+  }, [isAuthenticated, segments]);
+
+  return (
+    <Stack screenOptions={{ headerShown: false }} />
+  );
+}
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -40,10 +60,12 @@ export default function RootLayout() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <View style={{ flex: 1, backgroundColor: "#F5F0E8" }}>
-        <Stack screenOptions={{ headerShown: false }} />
-        <StatusBar style="dark" backgroundColor="#F5F0E8" />
-      </View>
+      <SafeAreaProvider>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#F5F0E8" }} edges={["top", "bottom"]}>
+          <RootLayoutNav />
+          <StatusBar style="dark" backgroundColor="#F5F0E8" />
+        </SafeAreaView>
+      </SafeAreaProvider>
     </QueryClientProvider>
   );
 }

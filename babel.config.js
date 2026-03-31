@@ -16,7 +16,7 @@ module.exports = function (api) {
             "@services": "./src/services",
             "@stores": "./src/stores",
             "@lib": "./src/lib",
-            "@types": "./src/types",
+            "@mytypes": "./src/types",
             "@constants": "./src/constants",
             "@utils": "./src/utils",
             "@assets": "./assets",
