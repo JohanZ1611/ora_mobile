@@ -1,104 +1,114 @@
-import { Tabs } from "expo-router";
-import { View, Text, Pressable } from "react-native";
+import { Tabs, useRouter } from "expo-router";
+import { Pressable, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { COLORS } from "@constants/colors";
+import { BarChart2, Home, Plus, Target, Receipt } from "lucide-react-native";
 
-function TabIcon({ emoji, label, focused }: { emoji: string; label: string; focused: boolean }) {
-  return (
-    <View className="items-center justify-center pt-2">
-      <Text style={{ fontSize: 20 }}>{emoji}</Text>
-      <Text
-        style={{
-          fontSize: 10,
-          fontFamily: focused ? "DMSans_600SemiBold" : "DMSans_400Regular",
-          color: focused ? COLORS.sand[300] : COLORS.warm.muted,
-          marginTop: 2,
-        }}
-      >
-        {label}
-      </Text>
-    </View>
-  );
-}
+const ACCENT = "#A8896A";
+const MUTED = "#80756b";
+const TAB_BG = "#EDE8DF";
 
 export default function AppLayout() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: COLORS.cream[200],
-          borderTopColor: COLORS.cream[300],
-          borderTopWidth: 1,
-          height: 60 + insets.bottom,
+          backgroundColor: TAB_BG,
+          borderTopWidth: 0,
+          height: 40 + insets.bottom,
           paddingBottom: insets.bottom,
-          elevation: 0,
-          shadowOpacity: 0,
+          borderTopLeftRadius: 24,
+          borderTopRightRadius: 24,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          shadowColor: "#1d1c17",
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.05,
+          shadowRadius: 20,
+          elevation: 12,
         },
-        tabBarShowLabel: false,
+        tabBarShowLabel: true,
+        tabBarLabelStyle: {
+          fontSize: 10,
+          fontFamily: "DMSans_700Bold",
+          letterSpacing: 0.5,
+          marginTop: -4,
+        },
+        tabBarActiveTintColor: ACCENT,
+        tabBarInactiveTintColor: MUTED,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="🏠" label="Inicio" focused={focused} />
+          title: "Inicio",
+          tabBarIcon: ({ focused, color }) => (
+            <Home size={22} color={color} fill={focused ? color : "none"} />
           ),
         }}
       />
       <Tabs.Screen
         name="transactions"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="💸" label="Movimientos" focused={focused} />
+          title: "Movimientos",
+          tabBarIcon: ({ color }) => (
+            <Receipt size={22} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="add"
         options={{
+          title: "",
           tabBarIcon: () => (
             <View
               style={{
-                width: 52,
-                height: 52,
-                borderRadius: 26,
-                backgroundColor: COLORS.sand[300],
+                width: 56,
+                height: 56,
+                borderRadius: 28,
+                backgroundColor: ACCENT,
                 justifyContent: "center",
                 alignItems: "center",
-                marginBottom: 20,
-                shadowColor: COLORS.sand[300],
+                marginBottom: 24,
+                shadowColor: ACCENT,
                 shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 6,
+                shadowOpacity: 0.35,
+                shadowRadius: 10,
+                elevation: 8,
               }}
             >
-              <Text style={{ fontSize: 24, color: "white" }}>+</Text>
+              <Plus size={26} color="#fff" strokeWidth={2.5} />
             </View>
           ),
         }}
-        listeners={({ navigation }) => ({
+        listeners={{
           tabPress: (e) => {
             e.preventDefault();
           },
-        })}
+        }}
       />
       <Tabs.Screen
         name="reports"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="📊" label="Reportes" focused={focused} />
+          title: "Reportes",
+          tabBarIcon: ({ color }) => (
+            <BarChart2 size={22} color={color} />
           ),
         }}
       />
       <Tabs.Screen
         name="goals"
         options={{
-          tabBarIcon: ({ focused }) => (
-            <TabIcon emoji="🎯" label="Metas" focused={focused} />
+          title: "Metas",
+          tabBarIcon: ({ focused, color }) => (
+            <Target size={22} color={color} fill={focused ? color : "none"} />
           ),
         }}
       />
