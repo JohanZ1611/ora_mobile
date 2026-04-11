@@ -11,6 +11,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Toaster } from "sonner-native";
@@ -40,9 +41,7 @@ function RootLayoutNav() {
     }
   }, [isAuthenticated, segments]);
 
-  return (
-    <Stack screenOptions={{ headerShown: false }} />
-  );
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
 
 export default function RootLayout() {
@@ -63,14 +62,16 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SafeAreaProvider>
-        <View style={{ flex: 1, backgroundColor: "#F5F0E8" }}>
-          <RootLayoutNav />
-          <StatusBar style="dark" backgroundColor="#F5F0E8" />
-          <Toaster />
-        </View>
-      </SafeAreaProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <SafeAreaProvider>
+          <View style={{ flex: 1, backgroundColor: "#F5F0E8" }}>
+            <RootLayoutNav />
+            <StatusBar style="dark" backgroundColor="#F5F0E8" />
+            <Toaster />
+          </View>
+        </SafeAreaProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
