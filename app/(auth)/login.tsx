@@ -17,6 +17,7 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react-native";
 import { COLORS } from "@constants/colors";
 import { authService } from "@services/auth.service";
 import { useAuthStore } from "@stores/auth.store";
+import { signInWithGoogle } from "@services/google-auth.service";
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -59,6 +60,20 @@ export default function LoginScreen() {
       toast.error(message, { description: "Verifica tu correo y contraseña" });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    try {
+      const token = await signInWithGoogle();
+      if (!token) return;
+      const res = await authService.me();
+      if (res.ok) {
+        setAuth(token, res.data);
+        router.replace("/(app)");
+      }
+    } catch (error) {
+      toast.error("Error al iniciar sesión con Google");
     }
   };
 
@@ -252,7 +267,7 @@ export default function LoginScreen() {
             </View>
 
             {/* Google */}
-            <Pressable onPress={() => {}}>
+            <Pressable onPress={handleGoogleLogin}>
               {({ pressed }) => (
                 <View style={{
                   flexDirection: "row",
