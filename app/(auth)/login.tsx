@@ -29,6 +29,7 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const validate = () => {
     const e: typeof errors = {};
@@ -64,16 +65,54 @@ export default function LoginScreen() {
   };
 
   const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
     try {
-      const token = await signInWithGoogle();
-      if (!token) return;
-      const res = await authService.me();
-      if (res.ok) {
-        setAuth(token, res.data);
-        router.replace("/(app)");
+      const session = await signInWithGoogle();
+      if (session?.user) {
+        // Busca o crea el usuario en tu backend
+        try {
+          const res = await authService.login({
+            email: session.user.email!,
+            password: "google-oauth",
+          });
+          if (res.ok) {
+            setAuth(res.data.token, {
+              id: res.data.user.id,
+              email: res.data.user.email ?? session.user.email!,
+              name: res.data.user.name ?? session.user.user_metadata?.full_name ?? null,
+              avatarUrl: session.user.user_metadata?.avatar_url ?? null,
+              currency: "COP",
+            });
+            router.replace("/(app)");
+          }
+        } catch {
+          // Usuario nuevo — registrarlo
+          const name = session.user.user_metadata?.full_name ?? "Usuario";
+          await authService.register({
+            email: session.user.email!,
+            password: `google_${session.user.id}`,
+            name,
+          });
+          const loginRes = await authService.login({
+            email: session.user.email!,
+            password: `google_${session.user.id}`,
+          });
+          if (loginRes.ok) {
+            setAuth(loginRes.data.token, {
+              id: loginRes.data.user.id,
+              email: loginRes.data.user.email ?? session.user.email!,
+              name,
+              avatarUrl: session.user.user_metadata?.avatar_url ?? null,
+              currency: "COP",
+            });
+            router.replace("/(app)");
+          }
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.error("Error al iniciar sesión con Google");
+    } finally {
+      setGoogleLoading(false);
     }
   };
 
@@ -267,7 +306,7 @@ export default function LoginScreen() {
             </View>
 
             {/* Google */}
-            <Pressable onPress={handleGoogleLogin}>
+            <Pressable onPress={handleGoogleLogin} disabled={googleLoading}>
               {({ pressed }) => (
                 <View style={{
                   flexDirection: "row",
@@ -279,6 +318,7 @@ export default function LoginScreen() {
                   borderColor: "#d2c4b9",
                   backgroundColor: pressed ? "#e7e2da" : "transparent",
                   gap: 10,
+                  opacity: googleLoading ? 0.7 : 1,
                 }}>
                   <Image
                     source={require("../../assets/images/google-logo.png")}
@@ -286,7 +326,7 @@ export default function LoginScreen() {
                     resizeMode="contain"
                   />
                   <Text style={{ fontFamily: "DMSans_600SemiBold", fontSize: 15, color: "#1d1c17" }}>
-                    Continuar con Google
+                    {googleLoading ? "Conectando..." : "Continuar con Google"}
                   </Text>
                 </View>
               )}
