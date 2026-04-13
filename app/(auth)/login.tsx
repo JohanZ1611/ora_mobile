@@ -44,6 +44,8 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     if (!validate()) return;
     setLoading(true);
+    console.log("Intentando login con:", email);
+    console.log("API URL:", process.env.EXPO_PUBLIC_API_URL);
     try {
       const res = await authService.login({ email, password });
       if (res.ok) {
