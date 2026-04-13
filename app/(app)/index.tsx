@@ -67,7 +67,7 @@ export default function HomeScreen() {
     <View style={{ flex: 1, backgroundColor: "#F5F0E8" }}>
       <OraHeader />
       <ScrollView
-        contentContainerStyle={{ padding: 20, gap: 24, paddingBottom: insets.bottom + 80 }}
+        contentContainerStyle={{ padding: 20, gap: 24, paddingBottom: insets.bottom + 10 }}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl

@@ -32,6 +32,7 @@ export default function ProfileScreen() {
   useEffect(() => {
     if (user?.name) setName(user.name);
   }, [user?.name]);
+  console.log(user)
 
   const updateMutation = useMutation({
     mutationFn: () => userService.updateProfile({ name }),
@@ -144,7 +145,7 @@ export default function ProfileScreen() {
         contentContainerStyle={{
           padding: 24,
           gap: 24,
-          paddingBottom: insets.bottom + 100,
+          paddingBottom: insets.bottom + 60,
         }}
         showsVerticalScrollIndicator={false}
       >
@@ -215,7 +216,7 @@ export default function ProfileScreen() {
         </View>
 
         {/* Apariencia */}
-        <View style={{ backgroundColor: "#f8f3eb", borderRadius: 20, padding: 20, gap: 20 }}>
+        <View style={{ backgroundColor: "#EDE8DF", borderRadius: 20, padding: 20, gap: 20 }}>
           <Text style={{ fontFamily: "DMSans_700Bold", fontSize: 18, color: "#1d1c17" }}>
             Apariencia
           </Text>
@@ -255,43 +256,49 @@ export default function ProfileScreen() {
           <Text style={{ fontFamily: "DMSans_700Bold", fontSize: 18, color: "#1d1c17", marginBottom: 12 }}>
             Preferencias
           </Text>
-          <View style={{ backgroundColor: "#f8f3eb", borderRadius: 20, overflow: "hidden" }}>
+          <View style={{ backgroundColor: "#EDE8DF", borderRadius: 20, overflow: "hidden", padding: 16, gap: 20 }}>
             {[
               { icon: CreditCard, title: "Moneda principal", sub: `${user?.currency ?? "COP"} - Peso colombiano` },
               { icon: Bell, title: "Notificaciones", sub: "Alertas de gastos y movimientos" },
-              { icon: Calendar, title: "Recordatorios", sub: "Pagos programados y metas", isLast: true },
+              { icon: Calendar, title: "Recordatorios", sub: "Pagos programados y metas" },
             ].map((item, index, arr) => (
               <Pressable
                 key={item.title}
                 style={({ pressed }) => ({
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
                   backgroundColor: pressed ? "#ece8e0" : "transparent",
-                  paddingHorizontal: 16,
-                  paddingVertical: 14,
                   borderBottomWidth: index < arr.length - 1 ? 1 : 0,
-                  borderBottomColor: "#d2c4b925",
+                  borderBottomColor: "#d2c4b930",
+                  paddingVertical: 14,
+                  paddingHorizontal: 16,
                 })}
               >
-                <View style={{ flexDirection: "row", alignItems: "center", gap: 14, flex: 1 }}>
-                  <View style={{
-                    width: 40, height: 40, borderRadius: 12,
-                    backgroundColor: "#A8896A15",
-                    justifyContent: "center", alignItems: "center",
-                  }}>
-                    <item.icon size={20} color="#A8896A" />
+                {/* Layout dentro del Pressable */}
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  {/* Bloque izquierdo */}
+                  <View style={{ flexDirection: "row", alignItems: "center", gap: 14, flex: 1 }}>
+                    <View style={{
+                      width: 40,
+                      height: 40,
+                      borderRadius: 12,
+                      backgroundColor: "#A8896A15",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}>
+                      <item.icon size={20} color="#A8896A" />
+                    </View>
+                    <View style={{ flexShrink: 1 }}>
+                      <Text style={{ fontFamily: "DMSans_600SemiBold", fontSize: 14, color: "#1d1c17" }}>
+                        {item.title}
+                      </Text>
+                      <Text style={{ fontFamily: "DMSans_400Regular", fontSize: 12, color: "#80756b", marginTop: 2 }}>
+                        {item.sub}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontFamily: "DMSans_600SemiBold", fontSize: 14, color: "#1d1c17" }}>
-                      {item.title}
-                    </Text>
-                    <Text style={{ fontFamily: "DMSans_400Regular", fontSize: 12, color: "#80756b", marginTop: 2 }}>
-                      {item.sub}
-                    </Text>
-                  </View>
+
+                  {/* Chevron siempre al final */}
+                  <ChevronRight size={18} color="#80756b" />
                 </View>
-                <ChevronRight size={18} color="#80756b" />
               </Pressable>
             ))}
           </View>
@@ -302,53 +309,78 @@ export default function ProfileScreen() {
           <Text style={{ fontFamily: "DMSans_700Bold", fontSize: 18, color: "#1d1c17", marginBottom: 12 }}>
             Cuenta
           </Text>
-          <View style={{ gap: 10 }}>
+
+          <View style={{
+            backgroundColor: "#EDE8DF",
+            borderRadius: 20,
+            overflow: "hidden",
+            padding: 16,
+            gap: 20, // 👈 separación entre items
+          }}>
+            {/* Cerrar sesión */}
             <Pressable
               onPress={handleLogout}
               style={({ pressed }) => ({
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 14,
-                backgroundColor: pressed ? "#ece8e0" : "#f8f3eb",
-                borderRadius: 16,
-                padding: 18,
+                backgroundColor: pressed ? "#ece8e0" : "transparent",
+                paddingHorizontal: 16,
+                paddingVertical: 14,
+                borderBottomWidth: 1,
+                borderBottomColor: "#d2c4b925",
               })}
             >
-              <View style={{
-                width: 40, height: 40, borderRadius: 12,
-                backgroundColor: "#A8896A15",
-                justifyContent: "center", alignItems: "center",
-              }}>
-                <LogOut size={20} color="#A8896A" />
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                {/* Bloque izquierdo */}
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 14, flex: 1 }}>
+                  <View style={{
+                    width: 40, height: 40, borderRadius: 12,
+                    backgroundColor: "#A8896A15",
+                    justifyContent: "center", alignItems: "center",
+                  }}>
+                    <Bell size={20} color="#A8896A" />
+                  </View>
+                  <View style={{ flexShrink: 1 }}>
+                    <Text style={{ fontFamily: "DMSans_600SemiBold", fontSize: 14, color: "#71573b" }}>
+                      Cerrar sesión
+                    </Text>
+                    <Text style={{ fontFamily: "DMSans_400Regular", fontSize: 12, color: "#4e453d", marginTop: 2 }}>
+                      Desconectar de tu cuenta
+                    </Text>
+                  </View>
+                </View>
+                {/* Chevron */}
+                <ChevronRight size={18} color="#80756b" />
               </View>
-              <Text style={{ fontFamily: "DMSans_600SemiBold", fontSize: 15, color: "#1d1c17" }}>
-                Cerrar sesión
-              </Text>
             </Pressable>
 
+            {/* Eliminar cuenta */}
             <Pressable
               onPress={handleDeleteAccount}
               style={({ pressed }) => ({
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 14,
-                backgroundColor: pressed ? "#ffdad615" : "#fff5f5",
-                borderRadius: 16,
-                padding: 18,
-                borderWidth: 1,
-                borderColor: "#ba1a1a20",
+                backgroundColor: pressed ? "#ece8e0" : "transparent",
+                paddingHorizontal: 16,
+                paddingVertical: 14,
               })}
             >
-              <View style={{
-                width: 40, height: 40, borderRadius: 12,
-                backgroundColor: "#ba1a1a10",
-                justifyContent: "center", alignItems: "center",
-              }}>
-                <Trash2 size={20} color="#ba1a1a" />
+              <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                {/* Bloque izquierdo */}
+                <View style={{ flexDirection: "row", alignItems: "center", gap: 14, flex: 1 }}>
+                  <View style={{
+                    width: 40, height: 40, borderRadius: 12,
+                    backgroundColor: "#ba1a1a15",
+                    justifyContent: "center", alignItems: "center",
+                  }}>
+                    <Trash2 size={20} color="#ba1a1a" />
+                  </View>
+                  <View style={{ flexShrink: 1 }}>
+                    <Text style={{ fontFamily: "DMSans_600SemiBold", fontSize: 14, color: "#ba1a1a" }}>
+                      Eliminar cuenta definitivamente
+                    </Text>
+                    <Text style={{ fontFamily: "DMSans_400Regular", fontSize: 12, color: "#4e453d", marginTop: 2 }}>
+                      Esta acción no se puede deshacer
+                    </Text>
+                  </View>
+                </View>
               </View>
-              <Text style={{ fontFamily: "DMSans_600SemiBold", fontSize: 15, color: "#ba1a1a" }}>
-                Eliminar cuenta
-              </Text>
             </Pressable>
           </View>
         </View>

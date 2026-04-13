@@ -67,48 +67,9 @@ export default function LoginScreen() {
   const handleGoogleLogin = async () => {
     setGoogleLoading(true);
     try {
-      const session = await signInWithGoogle();
-      if (session?.user) {
-        // Busca o crea el usuario en tu backend
-        try {
-          const res = await authService.login({
-            email: session.user.email!,
-            password: "google-oauth",
-          });
-          if (res.ok) {
-            setAuth(res.data.token, {
-              id: res.data.user.id,
-              email: res.data.user.email ?? session.user.email!,
-              name: res.data.user.name ?? session.user.user_metadata?.full_name ?? null,
-              avatarUrl: session.user.user_metadata?.avatar_url ?? null,
-              currency: "COP",
-            });
-            router.replace("/(app)");
-          }
-        } catch {
-          // Usuario nuevo — registrarlo
-          const name = session.user.user_metadata?.full_name ?? "Usuario";
-          await authService.register({
-            email: session.user.email!,
-            password: `google_${session.user.id}`,
-            name,
-          });
-          const loginRes = await authService.login({
-            email: session.user.email!,
-            password: `google_${session.user.id}`,
-          });
-          if (loginRes.ok) {
-            setAuth(loginRes.data.token, {
-              id: loginRes.data.user.id,
-              email: loginRes.data.user.email ?? session.user.email!,
-              name,
-              avatarUrl: session.user.user_metadata?.avatar_url ?? null,
-              currency: "COP",
-            });
-            router.replace("/(app)");
-          }
-        }
-      }
+      await signInWithGoogle();
+      // El manejo de sesión ocurre en app/auth/callback.tsx
+      // No hacer nada aquí — Expo Router navega automáticamente
     } catch (error: any) {
       toast.error("Error al iniciar sesión con Google");
     } finally {
@@ -122,7 +83,7 @@ export default function LoginScreen() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView
-        contentContainerStyle={{ flexGrow: 1, paddingTop: insets.top }}
+        contentContainerStyle={{ flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
