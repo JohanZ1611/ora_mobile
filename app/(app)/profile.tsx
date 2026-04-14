@@ -32,7 +32,6 @@ export default function ProfileScreen() {
   useEffect(() => {
     if (user?.name) setName(user.name);
   }, [user?.name]);
-  console.log(user)
 
   const updateMutation = useMutation({
     mutationFn: () => userService.updateProfile({ name }),
