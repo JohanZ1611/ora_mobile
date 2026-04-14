@@ -61,7 +61,7 @@ export function UpcomingPayments({ payments }: Props) {
               key={p.id}
               style={{
                 minWidth: 130,
-                backgroundColor: "#f2ede5",
+                backgroundColor: "#EDE8DF",
                 borderRadius: 16,
                 padding: 16,
                 borderWidth: 1,
